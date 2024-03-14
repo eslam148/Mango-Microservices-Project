@@ -122,7 +122,7 @@ namespace Mango.Services.CouponAPI.Controllers
         {
             try
             {
-                Coupon obj = _db.Coupons.Find(id);
+                Coupon? obj = _db.Coupons.Find(id);
                 if (obj!= null)
                 {
                     _db.Coupons.Remove(obj);

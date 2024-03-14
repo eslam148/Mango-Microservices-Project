@@ -1,9 +1,12 @@
 
 using AutoMapper;
-using Mango.Services.CouponAPI.Data;
+ using Mango.Services.AuthAPI.Data;
+using Mango.Services.AuthAPI.Models;
+using Mango.Services.AuthAuthAPI;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Mango.Services.CouponAPI
+namespace Mango.Services.AuthAPI
 {
     public class Program
     {
@@ -18,14 +21,16 @@ namespace Mango.Services.CouponAPI
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DbKey"));
             });
             #endregion
+            #region IdintityConfigration
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+            #endregion
             #region AutoMaper Configration 
             IMapper? mapper = MappingConfig.RegisterMaps().CreateMapper();
             builder.Services.AddSingleton(mapper);
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             #endregion
-
             builder.Services.AddControllers();
-            
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -40,6 +45,7 @@ namespace Mango.Services.CouponAPI
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
@@ -47,21 +53,18 @@ namespace Mango.Services.CouponAPI
 
             app.Run();
 
-
             void ApplyMigration()
             {
                 using (var scope = app.Services.CreateScope())
                 {
                     var _db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                    if( _db.Database.GetPendingMigrations().Count() > 0 )
+                    if (_db.Database.GetPendingMigrations().Count() > 0)
                     {
                         _db.Database.Migrate();
                     }
                 }
             }
         }
-
-       
     }
 }
