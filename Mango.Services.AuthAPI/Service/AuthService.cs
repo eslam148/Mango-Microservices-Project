@@ -69,7 +69,7 @@ namespace Mango.Services.AuthAPI.Service
                 Email = registerationRequestDto.Email,
                 NormalizedEmail = registerationRequestDto.Email.ToUpper(),
                 Name = registerationRequestDto.Name,
-                PhoneNumber = registerationRequestDto.PhoneNubmber
+                PhoneNumber = registerationRequestDto.PhoneNumber,
             };
             try
             {
