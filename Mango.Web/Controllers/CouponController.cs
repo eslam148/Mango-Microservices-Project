@@ -73,9 +73,10 @@ namespace Mango.Web.Controllers
             else
             {
                 TempData["error"]=response?.Message;
+                return View( );
+
             }
-            return NotFound();
-        }
+         }
 
         [HttpPost]
         public async Task<IActionResult> CouponDelete(CouponDto couponDto)
@@ -98,7 +99,7 @@ namespace Mango.Web.Controllers
             }
            
 
-            return View(couponDto);
+            return RedirectToAction(nameof(CouponIndex));
         }
     }
 }

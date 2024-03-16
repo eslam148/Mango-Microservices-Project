@@ -4,8 +4,7 @@ using Mango.Services.CouponAPI.Models;
 using Mango.Services.CouponAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-
+ 
 namespace Mango.Services.CouponAPI.Controllers
 {
     [Route("api/coupon")]
@@ -41,6 +40,7 @@ namespace Mango.Services.CouponAPI.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
+        //[Authorize(Roles = "ADMIN")]
         public ResponseDto Get(int id)
         {
             try
@@ -60,6 +60,7 @@ namespace Mango.Services.CouponAPI.Controllers
 
         [HttpGet]
         [Route("GetByCode/{code}")]
+        //[Authorize(Roles = "ADMIN")]
         public ResponseDto GetByCode(string code)
         {
             try
@@ -81,7 +82,8 @@ namespace Mango.Services.CouponAPI.Controllers
         }
 
         [HttpPost]
-         public ResponseDto Post([FromBody] CouponDto couponDto)
+        [Authorize(Roles = "ADMIN")]
+        public ResponseDto Post([FromBody] CouponDto couponDto)
         {
             try
             {
@@ -100,6 +102,7 @@ namespace Mango.Services.CouponAPI.Controllers
 
 
         [HttpPut]
+        [Authorize(Roles = "ADMIN")]
         public ResponseDto Put([FromBody] CouponDto couponDto)
         {
             try
@@ -120,6 +123,7 @@ namespace Mango.Services.CouponAPI.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles = "ADMIN")]
         public ResponseDto Delete(int id)
         {
             try

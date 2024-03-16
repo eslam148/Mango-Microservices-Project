@@ -1,9 +1,11 @@
 
 using AutoMapper;
 using Mango.Services.CouponAPI.Data;
+using Mango.Services.CouponAPI.Extentions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace Mango.Services.CouponAPI
@@ -30,33 +32,37 @@ namespace Mango.Services.CouponAPI
             builder.Services.AddControllers();
             
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            #region provide Token
-            var secret = builder.Configuration.GetValue<string>("ApiSettings:Secret");
-            var Audience = builder.Configuration.GetValue<string>("ApiSettings:Audience");
-            var Issuer = builder.Configuration.GetValue<string>("ApiSettings:Issuer");
-
-            var Key = Encoding.ASCII.GetBytes(secret);
-
-            builder.Services.AddAuthentication(x =>
+            #region Create Bearer API Key
+            builder.Services.AddSwaggerGen(option =>
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(x =>
-            {
-                x.TokenValidationParameters = new TokenValidationParameters
+                option.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Key),
-                    ValidateIssuer = true,
-                    ValidIssuer = Audience,
-                    ValidateAudience = true,
-                };
+                    Name = "Authorization",
+                    Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                option.AddSecurityRequirement(new OpenApiSecurityRequirement
+                 {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference= new OpenApiReference
+                                {
+                                    Type=ReferenceType.SecurityScheme,
+                                    Id=JwtBearerDefaults.AuthenticationScheme
+                                }
+                            }, new string[]{}
+                        }
+                 });
             });
-            builder.Services.AddAuthorization();
             #endregion
+           
+
+            builder.AddAppAuthentication();
+
+            builder.Services.AddAuthorization();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -68,6 +74,7 @@ namespace Mango.Services.CouponAPI
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
@@ -75,7 +82,7 @@ namespace Mango.Services.CouponAPI
 
             app.Run();
 
-
+            #region ApplyMigration
             void ApplyMigration()
             {
                 using (var scope = app.Services.CreateScope())
@@ -88,8 +95,9 @@ namespace Mango.Services.CouponAPI
                     }
                 }
             }
+            #endregion
         }
 
-       
+
     }
 }
