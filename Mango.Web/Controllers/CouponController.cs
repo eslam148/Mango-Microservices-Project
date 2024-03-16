@@ -1,5 +1,6 @@
 ﻿using Mango.Web.Models;
 using Mango.Web.Service.IService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Reflection;
 
 namespace Mango.Web.Controllers
 {
-    public class CouponController : Controller
+     public class CouponController : Controller
     {
         private readonly ICouponService _couponService;
         public CouponController(ICouponService couponService)
