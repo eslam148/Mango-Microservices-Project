@@ -25,8 +25,16 @@ namespace Mango.Web.Service
                 HttpRequestMessage message = new();
                 message.Headers.Add("Accept", "application/json");
                 // token
+                if (requestDto.ContentType == ContentType.MultipartFormData)
+                {
+                    message.Headers.Add("Accept", "*/*");
+                }
+                else
+                {
+                    message.Headers.Add("Accept", "application/json");
+                }
                 //Add Token Bearer
-                if(withBearer)
+                if (withBearer)
                 {
                     var token = _ITokenProvider.GetToken();
                     message.Headers.Add("Authorization", $"Bearer {token}");
