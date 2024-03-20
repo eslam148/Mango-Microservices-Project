@@ -6,7 +6,7 @@ namespace Mango.Services.ShoppingCartAPI.Extentions
 {
     public static class WebApplicationBuilderExtentions
     {
-        public static WebApplicationBuilder AddAppAuthentication(this WebApplicationBuilder builder) {
+        public static WebApplicationBuilder AddAppAuthetication(this WebApplicationBuilder builder) {
              var settingSection = builder.Configuration.GetSection("ApiSettings");
             var secret = settingSection.GetValue<string>("Secret");
             var Audience = settingSection.GetValue<string>("Audience");
